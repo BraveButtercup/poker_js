@@ -1,19 +1,8 @@
 const CONTAINER = document.querySelector(".js-container");
 const BUTTON = document.querySelector(".js-btn");
+const chipContainer = document.querySelector(".js-chip-count-container")
+const potContainer = document.querySelector(".js-pot-container")
 
-
-/* const lapok = function fetchLapok() {
-    fetch(`https://www.deckofcardsapi.com/api/deck/1fr3jasjwh6r/draw/?count=2`)
-        .then(r => r.json())
-        .then(feldolgoz)
-};
-
-function feldolgoz(response) {
-    return response.cards
-};
-
-
- */
 //program state
 
 let deckID = null;
@@ -23,14 +12,29 @@ let computerChips = 100;
 let pot = 0;
 
 
+function renderPlayerCards() {
 
-
-function render() {
     let html = "";
     for (let card of playerCards) {
         html += `<img src="${card.image}" alt="${card.code}"/>`;
     }
     CONTAINER.innerHTML = html;
+}
+function renderChips() {
+    chipContainer.innerHTML = `
+    <div class="js-chip-count-container"> Player: ${playerChips}</div>
+    <div class="js-chip-count-container"> Computer:  ${computerChips}</div>
+    `
+}
+function renderPot() {
+    potContainer.innerHTML = `
+    <div class="js-pot-container"> Pot: ${pot}</div>
+    `
+}
+function render() {
+    renderPlayerCards();
+    renderChips();
+    renderPot();
 }
 async function drawAndRenderPlayerCards() {
     if (deckID == null) return;
