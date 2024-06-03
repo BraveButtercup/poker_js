@@ -9,7 +9,20 @@
   <body>
     <h1>Poker</h1>
 
-    <button class="button-15 js-btn">New Game</button>
+    <button class="button-15 js-new-game-btn">New Game</button>
+    <section class="js-bet-area">
+      <label for="bet-amount">Bet</label>
+      <input
+        type="range"
+        min="1"
+        max="1"
+        class="slider"
+        id="bet-amount"
+        name="bet-amount"
+      />
+      <label for="bet-amount" class="js-slider-value"></label>
+      <button class="button-15 js-bet-button">Bet</button>
+    </section>
     <section class="js-chip-count-container"></section>
     <section class="js-container"></section>
     <section class="js-pot-container"></section>

@@ -2,7 +2,12 @@ body {
   background-color: black;
   color: antiquewhite;
 }
-
+.invisible {
+  display: none;
+}
+.slider {
+  width: 80vw;
+}
 /* CSS */
 .button-15 {
   background-image: linear-gradient(#42a1ec, #0070c9);
