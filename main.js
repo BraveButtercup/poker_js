@@ -1,11 +1,20 @@
 const CONTAINER = document.querySelector(".js-container");
 const BUTTON = document.querySelector(".js-new-game-btn");
-const chipContainer = document.querySelector(".js-chip-count-container");
+
+const playerChipContainer = document.querySelector(".js-player-chip-count-container");
+const playerCardsContainer = document.querySelector(".js-player-card-container");
+
+const computerChipContainer = document.querySelector(".js-computer-chip-count-container");
+const computerActionContainer = document.querySelector(".js-computer-action");
+const computerCardsContainer = document.querySelector(".js-computer-cards-container");
+
 const potContainer = document.querySelector(".js-pot-container");
 const betArea = document.querySelector(".js-bet-area");
 const betSlider = document.querySelector("#bet-amount");
 const betSliderValue = document.querySelector(".js-slider-value");
-const betButton = document.querySelector(".js-bet-button")
+const betButton = document.querySelector(".js-bet-button");
+
+
 
 //program state
 
@@ -22,6 +31,7 @@ let {
     playerChips,
     computerChips,
     computerCards,
+    computerAction,
     pot,
 
 } = getInitialState();
@@ -31,16 +41,17 @@ function getInitialState() {
     return {
         playerBetPlaced: false,
         deckID: null,
-        computerCards: [],
         playerCards: [],
         playerChips: 100,
+        computerCards: [],
         computerChips: 100,
+        computerAction: null,
         pot: 0,
     }
 }
 function initializeGame() {
 
-    ({ playerChips, computerChips, pot } = getInitialState());
+    ({ playerCards, playerChips, computerChips, computerCards, computerAction, pot, deckID, playerBetPlaced, } = getInitialState());
     betSlider.value = 0;
 }
 function canBet() {
@@ -58,19 +69,24 @@ function renderSlider() {
         betArea.classList.add("invisible");
     }
 }
-
-function renderPlayerCards() {
-
+function renderCardsInContainer(cards, container) {
     let html = "";
-    for (let card of playerCards) {
+    for (let card of cards) {
         html += `<img src="${card.image}" alt="${card.code}"/>`;
     }
-    CONTAINER.innerHTML = html;
+    container.innerHTML = html;
 }
+function renderAllCards() {
+    renderCardsInContainer(playerCards, playerCardsContainer);
+    renderCardsInContainer(computerCards, computerCardsContainer);
+}
+
 function renderChips() {
-    chipContainer.innerHTML = `
-    <div class="js-chip-count-container"> Player: ${playerChips}</div>
-    <div class="js-chip-count-container"> Computer:  ${computerChips}</div>
+    playerChipContainer.innerHTML = `
+    <div class="js-chip-count-container"> Player: ${playerChips} chips</div>
+    `
+    computerChipContainer.innerHTML = `
+    <div class="js-chip-count-container"> Computer:  ${computerChips} chips</div>
     `
 }
 function renderPot() {
@@ -78,12 +94,17 @@ function renderPot() {
     <div class="js-pot-container"> Pot: ${pot}</div>
     `
 }
+function renderActions() {
+
+    computerActionContainer.innerHTML = computerAction ?? "";
+}
 function render() {
 
-    renderPlayerCards();
+    renderAllCards();
     renderChips();
     renderPot();
     renderSlider();
+    renderActions();
 };
 
 async function drawAndRenderPlayerCards() {
@@ -120,7 +141,7 @@ function startGame() {
 
 };
 
-function shouldComputerCall() {
+function shouldComputerCall(computerCards) {
     if (computerCards.length !== 2)
         return false;
     const card1Code = computerCards[0].code;
@@ -143,9 +164,15 @@ function computerMoveAfterBet() {
     fetch(`https://www.deckofcardsapi.com/api/deck/${deckID}/draw/?count=2`)
         .then(response => response.json())
         .then(function (response) {
-            computerCards = response.cards;
-            alert(shouldComputerCall() ? 'Call' : 'Fold');
-            console.log(computerCards);
+
+            if (shouldComputerCall(response.cards)) {
+                computerAction = "Call"
+                computerCards = response.cards;
+            } else {
+                computerAction = "Fold"
+            }
+
+            render();
         });
     //render();
 }
